@@ -23,16 +23,14 @@ window.onload = () => {
   //     fillColor: "#ff0000",
   //   });
   // });
-
-  // const geohahes = L.geoJSON().addTo(map);
-
+  
   function onEachFeature(feature, layer) {
     let popupContent =
-      "<p>I started out as a GeoJSON " +
+      "type: " +
       feature.type +
-      ", but now I'm a Leaflet vector!</p>";
-    if (feature.properties && feature.properties.popupContent) {
-      popupContent += feature.properties.popupContent;
+      "</p>";
+    if (feature.properties && feature.properties.ghs) {
+      popupContent += feature.properties.val_density_km2;
     }
     layer.bindPopup(popupContent);
   }
@@ -47,15 +45,7 @@ window.onload = () => {
       console.log(data.features);
       geohashes = L.geoJSON(data, {
         onEachFeature: onEachFeature,
-      })
-        .bindPopup(function (layer) {
-          return layer.feature.properties.ghs;
-        })
-        .addTo(map);
+      }).addTo(map);
       map.fitBounds(geohashes.getBounds());
-      // if (is_mosaicLayer) {
-      //   mosaicLayer_zoomFit = map.getZoom();
-      //   map.options.minZoom = mosaicLayer_zoomFit - 2;
-      // }
     });
 }; //window onload
