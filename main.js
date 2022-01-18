@@ -1,12 +1,13 @@
 window.onload = () => {
-  var map = L.map("map", {
-    zoomControl: false,
-  }).fitWorld();
+  const baseURL =
+    "https://raw.githubusercontent.com/digital-guard/preservCutGeo-BR2021/main/data/MG/BeloHorizonte/_pk0008.01/geoaddress/";
+  const fp_ghs = "geohahes";
+  const map = L.map("map", {});
 
-  var tiles = L.tileLayer(
+  const tiles = L.tileLayer(
     "https://api.mapbox.com/styles/v1/{id}/tiles/{z}/{x}/{y}?access_token=pk.eyJ1IjoibWFwYm94IiwiYSI6ImNpejY4NXVycTA2emYycXBndHRqcmZ3N3gifQ.rJcFIG214AriISLbB6B5aw",
     {
-      maxZoom: 18,
+      // maxZoom: 18,
       attribution:
         'Map data &copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors, ' +
         'Imagery © <a href="https://www.mapbox.com/">Mapbox</a>',
@@ -16,29 +17,45 @@ window.onload = () => {
     }
   ).addTo(map);
 
-  function onLocationFound(e) {
-    var radius = e.accuracy / 2;
+  // geohahes.on("mouseover", (e) => {
+  //   //console.log("debug2",fp_ghs,this);
+  //   geohahes.setStyle({
+  //     fillColor: "#ff0000",
+  //   });
+  // });
 
-    var locationMarker = L.marker(e.latlng)
-      .addTo(map)
-      .bindPopup("You are within " + radius + " meters from this point")
-      .openPopup();
+  // const geohahes = L.geoJSON().addTo(map);
 
-    var locationCircle = L.circle(e.latlng, radius).addTo(map);
+  function onEachFeature(feature, layer) {
+    let popupContent =
+      "<p>I started out as a GeoJSON " +
+      feature.type +
+      ", but now I'm a Leaflet vector!</p>";
+    if (feature.properties && feature.properties.popupContent) {
+      popupContent += feature.properties.popupContent;
+    }
+    layer.bindPopup(popupContent);
   }
 
-  function onLocationError(e) {
-    alert(e.message);
-  }
+  map.setView(new L.LatLng(-23.550385, -46.633956), 10);
 
-  map.addControl(L.control.zoom({ position: "topright" }));
-
-  map.on("locationfound", onLocationFound);
-  map.on("locationerror", onLocationError);
-
-  map.locate({
-    setView: true,
-    maxZoom: 16,
-  });
-
-};
+  fetch(baseURL + fp_ghs + ".geojson")
+    .then(function (response) {
+      return response.json();
+    })
+    .then(function (data) {
+      console.log(data.features);
+      geohashes = L.geoJSON(data, {
+        onEachFeature: onEachFeature,
+      })
+        .bindPopup(function (layer) {
+          return layer.feature.properties.ghs;
+        })
+        .addTo(map);
+      map.fitBounds(geohashes.getBounds());
+      // if (is_mosaicLayer) {
+      //   mosaicLayer_zoomFit = map.getZoom();
+      //   map.options.minZoom = mosaicLayer_zoomFit - 2;
+      // }
+    });
+}; //window onload

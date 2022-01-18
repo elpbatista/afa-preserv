@@ -1,11 +1,11 @@
 body {
-	padding: 0;
-	margin: 0;
+	font-family: Sans-Serif;
+	font-weight: 200;
+	font-size: 85%;
+	color: currentColor;
 }
 
-html,
-body,
 #map {
-	height: 100%;
-	width: 100vw;
+	height: 500px;
+	/* width: 100%; */
 }
