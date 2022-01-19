@@ -1,6 +1,6 @@
 window.onload = () => {
   const log = true;
-  const baseURL = '';
+  const baseURL = "https://raw.githubusercontent.com/elpbatista/afa-preserv/main/geohahes.geojson";
   // const baseURL ="https://raw.githubusercontent.com/digital-guard/preservCutGeo-BR2021/main/data/MG/BeloHorizonte/_pk0008.01/geoaddress/";
   const colors = chroma.scale("YlGnBu");
   const normalize = (val, max, min) => (val - min) / (max - min);
