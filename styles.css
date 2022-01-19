@@ -9,3 +9,8 @@ body {
 	height: 500px;
 	/* width: 100%; */
 }
+
+.leaflet-popup em {
+	font-weight: 400;
+	color: darkgray;
+}

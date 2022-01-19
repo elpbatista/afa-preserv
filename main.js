@@ -28,10 +28,11 @@ window.onload = () => {
   // });
 
   function onEachFeature(feature, layer) {
-    let popupContent = "type: " + feature.type + "</p>";
-    if (feature.properties && feature.properties.ghs) {
-      popupContent += feature.properties.val_density_km2;
-    }
+    let popupContent =
+      "<em>" +
+      feature.properties.ghs +
+      "</em> " +
+      feature.properties.val;
     layer.bindPopup(popupContent);
   }
 
