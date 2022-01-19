@@ -20,10 +20,9 @@ window.onload = () => {
     }
   ).addTo(map);
 
-  // geohahes.on("mouseover", (e) => {
-  //   //console.log("debug2",fp_ghs,this);
-  //   geohahes.setStyle({
-  //     fillColor: "#ff0000",
+  // geohashes.on("mouseover", (e) => {
+  //   this.setStyle({
+  //     fillOpacity: 0.95,
   //   });
   // });
 
@@ -35,6 +34,19 @@ window.onload = () => {
       feature.properties.val;
     layer.bindPopup(popupContent);
   }
+
+  // function onEachGeohash(feature, layer) {
+  //   layer
+  //     .bindTooltip(feature.properties.ghs.substring(3), {
+  //       permanent: true,
+  //       opacity: 0.7,
+  //       direction: "center",
+  //       className: "label",
+  //     })
+  //     .openTooltip();
+  // }
+
+  
 
   map.setView(new L.LatLng(-23.550385, -46.633956), 10);
 
@@ -73,9 +85,17 @@ window.onload = () => {
       // +++++++++++++++++++++++++++++++++++++++++++++++++++
 
       geohashes = L.geoJSON(data, {
-        onEachFeature: onEachFeature,
+        onEachFeature: function (feature, layer) {
+          layer
+            .bindTooltip(feature.properties.ghs.substring(3), {
+              permanent: true,
+              opacity: 0.65,
+              direction: "center",
+              className: "label",
+            })
+        },
         style: function (feature) {
-          console.log(feature);
+          // console.log(feature);
           return {
             fillColor: colors(
               normalize(
@@ -86,9 +106,9 @@ window.onload = () => {
               )
             ).hex(),
             color: "#000",
-            weight: .125,
+            weight: 0.125,
             // opacity: 1,
-            fillOpacity: .65,
+            fillOpacity: 0.65,
           };
         },
       }).addTo(map);
