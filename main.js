@@ -16,7 +16,6 @@ window.onload = () => {
       zoomOffset: -1,
     }
   );
-  // .addTo(map);
   const map = L.map("map", {
     layers: [tiles],
     center: L.LatLng(-23.550385, -46.633956),
@@ -78,7 +77,6 @@ window.onload = () => {
         style: (feature) => ({
           fillColor: colors(
             normalize(
-              // Math.round(feature.geometry.properties.val_density_km2),
               Math.round(feature.properties.val_density_km2),
               max,
               min
