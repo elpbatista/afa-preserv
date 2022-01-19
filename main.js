@@ -2,7 +2,6 @@ window.onload = () => {
   const log = true;
   const baseURL =
     "https://raw.githubusercontent.com/digital-guard/preservCutGeo-BR2021/main/data/MG/BeloHorizonte/_pk0008.01/geoaddress/";
-  const fp_ghs = "geohahes";
   const colors = chroma.scale("YlGnBu");
   const normalize = (val, max, min) => (val - min) / (max - min);
   const tiles = L.tileLayer(
@@ -41,7 +40,7 @@ window.onload = () => {
 
   // map.setView(new L.LatLng(-23.550385, -46.633956), 10);
 
-  fetch(baseURL + fp_ghs + ".geojson")
+  fetch(baseURL + "geohahes.geojson")
     .then(function (response) {
       return response.json();
     })
@@ -74,7 +73,7 @@ window.onload = () => {
         console.log(Math.round(data.features[2].properties.val_density_km2));
       }
       // +++++++++++++++++++++++++++++++++++++++++++++++++++
-      geohashes = L.geoJSON(data, {
+      window.geohashes = L.geoJSON(data, {
         style: (feature) => ({
           fillColor: colors(
             normalize(
