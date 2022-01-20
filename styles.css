@@ -21,3 +21,8 @@ body {
 	box-shadow: none;
 	font-weight: 500;
 }
+
+.leaflet-tooltip.tooltip {
+	font-weight: 500;
+	line-height: 1;
+}

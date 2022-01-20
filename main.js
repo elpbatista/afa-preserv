@@ -1,6 +1,7 @@
 window.onload = () => {
   const log = true;
-  const baseURL = "https://raw.githubusercontent.com/elpbatista/afa-preserv/main/";
+  const baseURL =
+    "https://raw.githubusercontent.com/elpbatista/afa-preserv/main/";
   // const baseURL ="https://raw.githubusercontent.com/digital-guard/preservCutGeo-BR2021/main/data/MG/BeloHorizonte/_pk0008.01/geoaddress/";
   const colors = chroma.scale("YlGnBu");
   const normalize = (val, max, min) => (val - min) / (max - min);
@@ -27,7 +28,7 @@ window.onload = () => {
   // geohashes.on("mouseover", (e) => {
   //   geohashes.setStyle({
   //     fillOpacity: 0.95,
-  //     fillColor:"FF0000",
+  //     fillColor: "FF0000",
   //   });
   // });
 
@@ -41,7 +42,7 @@ window.onload = () => {
 
   fetch(baseURL + "geohahes.geojson")
     .then(function (response) {
-      console.log(response)
+      console.log(response);
       return response.json();
     })
     .then(function (data) {
@@ -71,16 +72,13 @@ window.onload = () => {
         console.log(max);
         console.log(normalize(300, max, min));
         console.log(Math.round(data.features[2].properties.val_density_km2));
+        console.log(chroma('orange').hex());
       }
       // +++++++++++++++++++++++++++++++++++++++++++++++++++
-      window.geohashes = L.geoJSON(data, {
+      geohashes = L.geoJSON(data, {
         style: (feature) => ({
           fillColor: colors(
-            normalize(
-              Math.round(feature.properties.val_density_km2),
-              max,
-              min
-            )
+            normalize(Math.round(feature.properties.val_density_km2), max, min)
           ).hex(),
           color: "#000",
           weight: 0.125,
@@ -88,14 +86,37 @@ window.onload = () => {
           fillOpacity: 0.65,
         }),
         onEachFeature: (feature, layer) => {
+          let tooltipContent =
+            "Clique para ver os pontos<br/>do Geohash <b>" +
+            feature.properties.ghs +
+            "</b>";
           layer
-            .bindTooltip(feature.properties.ghs.substring(3), {
-              permanent: true,
+            // .bindTooltip(feature.properties.ghs.substring(3), {
+            .bindTooltip(tooltipContent, {
+              // permanent: true,
               opacity: 0.7,
-              direction: "center",
-              className: "label",
-            })
-            .openTooltip();
+              direction: "top",
+              sticky: true,
+              className: "tooltip",
+            });
+          layer.on("mouseover", (e) => {
+            layer.setStyle({
+              fillColor: "#ffa500",
+            }); // falta realçar o label e devolver cor certa
+            //layer.bindPopup( '<a href="#'+feature.properties.ghs+'">'+ feature.properties.ghs+'</a>' );
+            // layer.bindPopup(popupContent); // ?? como usar a posição do mouse??   .setLatLng(e.latlng);
+          });
+          layer.on("mouseout", (e) => {
+            layer.setStyle({
+              fillColor: colors(
+                normalize(
+                  Math.round(feature.properties.val_density_km2),
+                  max,
+                  min
+                )
+              ).hex(),
+            });
+          }); 
         },
       }).addTo(map);
       map.fitBounds(geohashes.getBounds());
