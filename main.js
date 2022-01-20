@@ -22,15 +22,7 @@ window.onload = () => {
     center: L.LatLng(-23.550385, -46.633956),
     zoom: 10,
   });
-
-  // function onEachFeature(feature, layer) {
-  //   let popupContent =
-  //     "<em>" + feature.properties.ghs + "</em> " + feature.properties.val;
-  //   layer.bindPopup(popupContent);
-  // }
-
-  // map.setView(new L.LatLng(-23.550385, -46.633956), 10);
-
+  
   fetch(baseURL + "geohahes.geojson")
     .then(function (response) {
       console.log(response);
@@ -73,7 +65,6 @@ window.onload = () => {
           ).hex(),
           color: "#000",
           weight: 0.125,
-          // opacity: 1,
           fillOpacity: 0.65,
         }),
         onEachFeature: (feature, layer) => {
@@ -89,16 +80,15 @@ window.onload = () => {
           }).addTo(map);
           label.bindTooltip(feature.properties.ghs.substring(3), {
             permanent: true,
+            opacity: 0.7,
             direction: "center",
             className: "label",
           });
           layer
-            // .bindTooltip(feature.properties.ghs.substring(3), {
             .bindTooltip(tooltipContent, {
-              // permanent: true,
+              sticky: true,
               opacity: 0.7,
               direction: "top",
-              sticky: true,
               className: "tooltip",
             });
           layer.on("mouseover", (e) => {
