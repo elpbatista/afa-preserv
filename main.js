@@ -1,8 +1,7 @@
 window.onload = () => {
   const log = true;
-  const baseURL =
-    "https://raw.githubusercontent.com/elpbatista/afa-preserv/main/";
-  // const baseURL ="https://raw.githubusercontent.com/digital-guard/preservCutGeo-BR2021/main/data/MG/BeloHorizonte/_pk0008.01/geoaddress/";
+  // const baseURL = "https://raw.githubusercontent.com/elpbatista/afa-preserv/main/";
+  const baseURL ="https://raw.githubusercontent.com/digital-guard/preservCutGeo-BR2021/main/data/MG/BeloHorizonte/_pk0008.01/geoaddress/";
   const colors = chroma.scale("YlGnBu");
   const normalize = (val, max, min) => (val - min) / (max - min);
   const tiles = L.tileLayer(
@@ -22,7 +21,7 @@ window.onload = () => {
     center: L.LatLng(-23.550385, -46.633956),
     zoom: 10,
   });
-  
+
   fetch(baseURL + "geohahes.geojson")
     .then(function (response) {
       console.log(response);
