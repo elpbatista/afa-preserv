@@ -23,15 +23,6 @@ window.onload = () => {
     zoom: 10,
   });
 
-  // let geohashes = L.geoJSON();
-
-  // geohashes.on("mouseover", (e) => {
-  //   geohashes.setStyle({
-  //     fillOpacity: 0.95,
-  //     fillColor: "FF0000",
-  //   });
-  // });
-
   // function onEachFeature(feature, layer) {
   //   let popupContent =
   //     "<em>" + feature.properties.ghs + "</em> " + feature.properties.val;
@@ -90,6 +81,17 @@ window.onload = () => {
             "Clique para ver os pontos<br/>do Geohash <b>" +
             feature.properties.ghs +
             "</b>";
+          let label = L.marker(layer.getBounds().getCenter(), {
+            icon: L.divIcon({
+              html: "",
+              iconSize: [0, 0],
+            }),
+          }).addTo(map);
+          label.bindTooltip(feature.properties.ghs.substring(3), {
+            permanent: true,
+            direction: "center",
+            className: "label",
+          });
           layer
             // .bindTooltip(feature.properties.ghs.substring(3), {
             .bindTooltip(tooltipContent, {
@@ -102,9 +104,7 @@ window.onload = () => {
           layer.on("mouseover", (e) => {
             layer.setStyle({
               fillColor: "#ffa500",
-            }); // falta realçar o label e devolver cor certa
-            //layer.bindPopup( '<a href="#'+feature.properties.ghs+'">'+ feature.properties.ghs+'</a>' );
-            // layer.bindPopup(popupContent); // ?? como usar a posição do mouse??   .setLatLng(e.latlng);
+            });
           });
           layer.on("mouseout", (e) => {
             layer.setStyle({
