@@ -1,7 +1,8 @@
 window.onload = () => {
   const log = true;
   // const baseURL = "https://raw.githubusercontent.com/elpbatista/afa-preserv/main/";
-  const baseURL ="https://raw.githubusercontent.com/digital-guard/preservCutGeo-BR2021/main/data/MG/BeloHorizonte/_pk0008.01/geoaddress/";
+  const baseURL =
+    "https://raw.githubusercontent.com/digital-guard/preservCutGeo-BR2021/main/data/MG/BeloHorizonte/_pk0008.01/geoaddress/";
   const colors = chroma.scale("YlGnBu");
   const normalize = (val, max, min) => (val - min) / (max - min);
   const tiles = L.tileLayer(
@@ -22,18 +23,13 @@ window.onload = () => {
     zoom: 10,
   });
 
-  fetch(baseURL + "geohahes.geojson")
+  fetch(`${baseURL}geohahes.geojson`)
     .then(function (response) {
       console.log(response);
       return response.json();
     })
     .then(function (data) {
-      let densities = [
-        ...new Set(
-          data.features.map((a) => Math.round(a.properties.val_density_km2))
-        ),
-      ];
-      // ].sort((a, b) => a - b);
+      let densities = data.features.map((a) => Math.round(a.properties.val_density_km2));
       let max = Math.max(...densities);
       let min = Math.min(...densities);
 
@@ -54,7 +50,7 @@ window.onload = () => {
         console.log(max);
         console.log(normalize(300, max, min));
         console.log(Math.round(data.features[2].properties.val_density_km2));
-        console.log(chroma('orange').hex());
+        console.log(chroma("orange").hex());
       }
       // +++++++++++++++++++++++++++++++++++++++++++++++++++
       geohashes = L.geoJSON(data, {
@@ -67,45 +63,48 @@ window.onload = () => {
           fillOpacity: 0.65,
         }),
         onEachFeature: (feature, layer) => {
-          let tooltipContent =
-            "Clique para ver os pontos<br/>do Geohash <b>" +
-            feature.properties.ghs +
-            "</b>";
-          let label = L.marker(layer.getBounds().getCenter(), {
+          let center = layer.getBounds().getCenter();
+          let label = L.marker(center, {
             icon: L.divIcon({
               html: "",
               iconSize: [0, 0],
             }),
-          }).addTo(map);
-          label.bindTooltip(feature.properties.ghs.substring(3), {
-            permanent: true,
-            opacity: 0.7,
-            direction: "center",
-            className: "label",
-          });
+          })
+            .bindTooltip(feature.properties.ghs.substring(3), {
+              permanent: true,
+              opacity: 0.7,
+              direction: "center",
+              className: "label",
+            })
+            .addTo(map);
           layer
-            .bindTooltip(tooltipContent, {
+            .bindTooltip(`Clique para ver os pontos<br/>do Geohash <b>${feature.properties.ghs}</b>`, {
               sticky: true,
               opacity: 0.7,
               direction: "top",
               className: "tooltip",
+            })
+            .on("mouseover", () => {
+              layer.setStyle({
+                fillColor: "#ffa500",
+              });
+            })
+            .on("mouseout", () => {
+              layer.setStyle({
+                fillColor: colors(
+                  normalize(
+                    Math.round(feature.properties.val_density_km2),
+                    max,
+                    min
+                  )
+                ).hex(),
+              });
+            })
+            .on("mouseup", () => {
+              // alert(feature.properties.ghs);
+              map.setView(center, 15);
+              layer.closeTooltip();
             });
-          layer.on("mouseover", (e) => {
-            layer.setStyle({
-              fillColor: "#ffa500",
-            });
-          });
-          layer.on("mouseout", (e) => {
-            layer.setStyle({
-              fillColor: colors(
-                normalize(
-                  Math.round(feature.properties.val_density_km2),
-                  max,
-                  min
-                )
-              ).hex(),
-            });
-          }); 
         },
       }).addTo(map);
       map.fitBounds(geohashes.getBounds());
