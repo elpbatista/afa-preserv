@@ -1,10 +1,34 @@
 window.onload = () => {
   const log = true;
+  const pointZero = {
+    type: "Point",
+    coordinates: [0, 0],
+  };
+  const orange = chroma("orange").hex();
   // const baseURL = "https://raw.githubusercontent.com/elpbatista/afa-preserv/main/";
   const baseURL =
     "https://raw.githubusercontent.com/digital-guard/preservCutGeo-BR2021/main/data/MG/BeloHorizonte/_pk0008.01/geoaddress/";
   const colors = chroma.scale("YlGnBu");
   const normalize = (val, max, min) => (val - min) / (max - min);
+  const addPoints = (ghs) =>
+    fetch(`${baseURL}pts_${ghs}.geojson`).then(function (response) {
+      return response.json();
+    }).then(function (data) {
+      var addresses = L.geoJSON(data, {
+        // onEachFeature: onEachFeature,
+        pointToLayer: function (feature, latlng) {
+          return L.circleMarker(latlng, {
+            radius: 3,
+            fillColor: orange,
+            color: "#000",
+            weight: .15,
+            opacity: 1,
+            fillOpacity: 0.8,
+          });
+        },
+      }).addTo(map);
+    });
+  
   const tiles = L.tileLayer(
     "https://api.mapbox.com/styles/v1/{id}/tiles/{z}/{x}/{y}?access_token=pk.eyJ1IjoibWFwYm94IiwiYSI6ImNpejY4NXVycTA2emYycXBndHRqcmZ3N3gifQ.rJcFIG214AriISLbB6B5aw",
     {
@@ -25,7 +49,6 @@ window.onload = () => {
 
   fetch(`${baseURL}geohahes.geojson`)
     .then(function (response) {
-      console.log(response);
       return response.json();
     })
     .then(function (data) {
@@ -101,9 +124,8 @@ window.onload = () => {
               });
             })
             .on("mouseup", () => {
-              // alert(feature.properties.ghs);
-              map.setView(center, 15);
-              layer.closeTooltip();
+              map.setView(center, 18);
+              addPoints(feature.properties.ghs);
             });
         },
       }).addTo(map);
